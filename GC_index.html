@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOC Ground Check Mobile</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: auto;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 100%;
+            /*전체 폼의 최대 너비를 800px로 설정 */
+            padding: 0 10px;
+            box-sizing: border-box;
+            margin-top: 5vh;
+            /* 상단에 20px의 여백 추가 */
+        }
+
+        .tx-container {
+            display: flex;
+            justify-content: space-between;
+            /* Tx1과 Tx2 사이 공간 균등 배분 */
+            width: 100%;
+            /* 컨테이너 너비 전체 */
+        }
+
+        .tx-box {
+            flex: 1;
+            /* 모바일에서는 각 박스가 전체 너비를 차지하도록 설정 */
+            margin-right: 10px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            /* 패딩과 보더가 너비에 포함되도록 설정 */
+            padding: 10px;
+            /* 각 박스에 패딩 추가 */
+        }
+
+        tx-box:last-child {
+            margin-right: 0;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+            /* 입력 그룹 사이의 간격을 15px로 설정 */
+        }
+
+        label {
+            display: block;
+            /* 라벨을 블록 요소로 설정 */
+            text-align: center;
+            /* 텍스트 중앙 정렬 */
+            margin-bottom: 5px;
+            /* 라벨 아래 여백 추가 */
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        button {
+            width: 100%;
+            font-size: 16px;
+            padding: 8px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+            /* 버튼과 입력 필드 사이에 20px 여백 추가 */
+        }
+
+        @media (min-width: 600px) {
+            .form-container {
+                max-width: 800px;
+            }
+
+            .tx-box {
+                width: 49%;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1 style="font-size: 30px;">LOC 지상점검 데이터 입력</h1>
+        <form id="dataForm">
+            <div>
+                <label for="date">날짜(yy.mm.dd):</label>
+                <input type="date" id="date" name="date"><br><br>
+                <label for="runway">활주로(ex. 14L):</label>
+                <input type="text" id="runway" name="runway"><br><br>
+            </div>
+            <div class="tx-container">
+                <div class="tx-box" id="tx1">
+                    <h3>Tx1</h3>
+                    <label class="label-fixed-width" for="tx1_90Hz_35deg">90Hz 35deg:</label>
+                    <input type="number" id="tx1_90Hz_35deg" name="tx1_90Hz_35deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_30deg">90Hz 30deg:</label>
+                    <input type="number" id="tx1_90Hz_30deg" name="tx1_90Hz_30deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_25deg">90Hz 25deg:</label>
+                    <input type="number" id="tx1_90Hz_25deg" name="tx1_90Hz_25deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_20deg">90Hz 20deg:</label>
+                    <input type="number" id="tx1_90Hz_20deg" name="tx1_90Hz_20deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_15deg">90Hz 15deg:</label>
+                    <input type="number" id="tx1_90Hz_15deg" name="tx1_90Hz_15deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_10deg">90Hz 10deg:</label>
+                    <input type="number" id="tx1_90Hz_10deg" name="tx1_90Hz_10deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_5deg">90Hz 5deg:</label>
+                    <input type="number" id="tx1_90Hz_5deg" name="tx1_90Hz_5deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_90Hz_width">90Hz width:</label>
+                    <input type="number" id="tx1_90Hz_width" name="tx1_90Hz_width" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_CL">C/L:</label>
+                    <input type="number" id="tx1_CL" name="tx1_CL" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_width">150Hz width:</label>
+                    <input type="number" id="tx1_150Hz_width" name="tx1_150Hz_width" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_5deg">150Hz 5deg:</label>
+                    <input type="number" id="tx1_150Hz_5deg" name="tx1_150Hz_5deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_10deg">150Hz 10deg:</label>
+                    <input type="number" id="tx1_150Hz_10deg" name="tx1_150Hz_10deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_15deg">150Hz 15deg:</label>
+                    <input type="number" id="tx1_150Hz_15deg" name="tx1_150Hz_15deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_20deg">150Hz 20deg:</label>
+                    <input type="number" id="tx1_150Hz_20deg" name="tx1_150Hz_20deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_25deg">150Hz 25deg:</label>
+                    <input type="number" id="tx1_150Hz_25deg" name="tx1_150Hz_25deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_30deg">150Hz 30deg:</label>
+                    <input type="number" id="tx1_150Hz_30deg" name="tx1_150Hz_30deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx1_150Hz_35deg">150Hz 35deg:</label>
+                    <input type="number" id="tx1_150Hz_35deg" name="tx1_150Hz_35deg" step="0.0001"><br>
+                </div>
+
+                <div class="tx-box" id="tx2">
+                    <h3>Tx2</h3>
+                    <label class="label-fixed-width" for="tx2_90Hz_35deg">90Hz 35deg:</label>
+                    <input type="number" id="tx2_90Hz_35deg" name="tx2_90Hz_35deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_30deg">90Hz 30deg:</label>
+                    <input type="number" id="tx2_90Hz_30deg" name="tx2_90Hz_30deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_25deg">90Hz 25deg:</label>
+                    <input type="number" id="tx2_90Hz_25deg" name="tx2_90Hz_25deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_20deg">90Hz 20deg:</label>
+                    <input type="number" id="tx2_90Hz_20deg" name="tx2_90Hz_20deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_15deg">90Hz 15deg:</label>
+                    <input type="number" id="tx2_90Hz_15deg" name="tx2_90Hz_15deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_10deg">90Hz 10deg:</label>
+                    <input type="number" id="tx2_90Hz_10deg" name="tx2_90Hz_10deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_5deg">90Hz 5deg:</label>
+                    <input type="number" id="tx2_90Hz_5deg" name="tx2_90Hz_5deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_90Hz_width">90Hz width:</label>
+                    <input type="number" id="tx2_90Hz_width" name="tx2_90Hz_width" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_CL">C/L:</label>
+                    <input type="number" id="tx2_CL" name="tx2_CL" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_width">150Hz width:</label>
+                    <input type="number" id="tx2_150Hz_width" name="tx2_150Hz_width" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_5deg">150Hz 5deg:</label>
+                    <input type="number" id="tx2_150Hz_5deg" name="tx2_150Hz_5deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_10deg">150Hz 10deg:</label>
+                    <input type="number" id="tx2_150Hz_10deg" name="tx2_150Hz_10deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_15deg">150Hz 15deg:</label>
+                    <input type="number" id="tx2_150Hz_15deg" name="tx2_150Hz_15deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_20deg">150Hz 20deg:</label>
+                    <input type="number" id="tx2_150Hz_20deg" name="tx2_150Hz_20deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_25deg">150Hz 25deg:</label>
+                    <input type="number" id="tx2_150Hz_25deg" name="tx2_150Hz_25deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_30deg">150Hz 30deg:</label>
+                    <input type="number" id="tx2_150Hz_30deg" name="tx2_150Hz_30deg" step="0.0001"><br>
+                    <label class="label-fixed-width" for="tx2_150Hz_35deg">150Hz 35deg:</label>
+                    <input type="number" id="tx2_150Hz_35deg" name="tx2_150Hz_35deg" step="0.0001"><br>
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="button" id="saveToExcel">엑셀로 저장</button>
+                <button type="button" id="fillRandom">랜덤변수 입력</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('fillRandom').addEventListener('click', function () {
+                const elements90Hz = ['tx1_90Hz_35deg', 'tx1_90Hz_30deg', 'tx1_90Hz_25deg', 'tx1_90Hz_20deg', 'tx1_90Hz_15deg', 'tx1_90Hz_10deg', 'tx1_90Hz_5deg', 'tx1_90Hz_width', 'tx2_90Hz_width',
+                    'tx2_90Hz_5deg', 'tx2_90Hz_10deg', 'tx2_90Hz_15deg', 'tx2_90Hz_20deg', 'tx2_90Hz_25deg', 'tx2_90Hz_30deg', 'tx2_90Hz_35deg'];
+                const elements150Hz = ['tx1_150Hz_35deg', 'tx1_150Hz_30deg', 'tx1_150Hz_25deg', 'tx1_150Hz_20deg', 'tx1_150Hz_15deg', 'tx1_150Hz_10deg', 'tx1_150Hz_5deg', 'tx1_150Hz_width', 'tx2_150Hz_width',
+                    'tx2_150Hz_5deg', 'tx2_150Hz_10deg', 'tx2_150Hz_15deg', 'tx2_150Hz_20deg', 'tx2_150Hz_25deg', 'tx2_150Hz_30deg', 'tx2_150Hz_35deg'];
+
+                // Function to generate random numbers within a range
+                function getRandom(min, max) {
+                    return (Math.random() * (max - min) + min).toFixed(4); // .toFixed(4) limits the decimal to 4 places
+                }
+
+                elements90Hz.forEach(id => {
+                    document.getElementById(id).value = getRandom(-0.35, 0);
+                });
+
+                elements150Hz.forEach(id => {
+                    document.getElementById(id).value = getRandom(0, 0.35);
+                });
+
+                // Set CL values to 0
+                document.getElementById('tx1_CL').value = 0;
+                document.getElementById('tx2_CL').value = 0;
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('saveToExcel').addEventListener('click', function () {
+                try {
+                    const date = document.getElementById('date').value;
+                    const runway = document.getElementById('runway').value;
+
+                    if (!date || !runway) {
+                        throw new Error('Date or runway information is missing.');
+                    }
+
+                    function formatDate(dateString) {
+                        const date = new Date(dateString);
+                        const year = date.getFullYear().toString().substring(2);
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const day = date.getDate().toString().padStart(2, '0');
+                        return `${year}.${month}.${day}`;
+                    }
+
+                    const formattedDate = formatDate(date);
+                    const filename = `${runway}_LOC_Ground_Check_${formattedDate}.xlsx`;
+
+                    const labels = [
+                        '90Hz 35˚', '90Hz 30˚', '90Hz 25˚', '90Hz 20˚', '90Hz 15˚', '90Hz 10˚', '90Hz 5˚', '90Hz width', 'CL',
+                        '150Hz width', '150Hz 5˚', '150Hz 10˚', '150Hz 15˚', '150Hz 20˚', '150Hz 25˚', '150Hz 30˚', '150Hz 35˚'
+                    ];
+
+                    const header = ["G/C Point", "Tx1", "Tx2"];
+                    const data = [header];
+
+                    labels.forEach((label, index) => {
+                        const formattedLabel = label.replace(/˚/g, 'deg').replace(/\s/g, '_');
+                        const tx1Id = `tx1_${formattedLabel}`;
+                        const tx2Id = `tx2_${formattedLabel}`;
+                        const tx1Element = document.getElementById(tx1Id);
+                        const tx2Element = document.getElementById(tx2Id);
+
+                        if (!data[index + 1]) data[index + 1] = [];
+                        data[index + 1][0] = label;
+
+                        if (!tx1Element || !tx2Element) {
+                            throw new Error(`Element not found: ${tx1Id} or ${tx2Id}`);
+                        }
+
+                        data[index + 1][1] = tx1Element.value; // Tx1 데이터를 B열에
+                        data[index + 1][2] = tx2Element.value; // Tx2 데이터를 C열에
+                    });
+
+                    const ws = XLSX.utils.aoa_to_sheet(data);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+                    XLSX.writeFile(wb, filename);
+                } catch (error) {
+                    console.error('An error occurred:', error);
+                    alert('An error occurred, please check the console for details.');
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
